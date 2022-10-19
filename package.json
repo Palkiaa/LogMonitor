@@ -1,0 +1,11 @@
+{
+  "name": "com.spaghetti.log-monitor",
+  "version": "1.0.0",
+  "displayName": "LogMonitor",
+  "description": "Helpful for displaying game state in a key: value format in-game",
+  "unity": "2020.3",
+  "author": {
+    "name": "Palkiaa",
+    "url": "https://github.com/Palkiaa"
+  }
+}
