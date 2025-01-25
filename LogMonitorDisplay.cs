@@ -1,7 +1,4 @@
-using System;
-using UnityEditor.Build;
 using UnityEngine;
-using UnityEngine.Experimental.AI;
 
 namespace LogMonitor
 {
