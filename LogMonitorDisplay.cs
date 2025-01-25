@@ -1,4 +1,7 @@
+using System;
+using UnityEditor.Build;
 using UnityEngine;
+using UnityEngine.Experimental.AI;
 
 namespace LogMonitor
 {
@@ -38,6 +41,9 @@ namespace LogMonitor
         public Color KeyColor = Color.white;
         public Color ValueColor = Color.white;
 
+        private Color _oldContainerColor;
+        private GUIStyle _currentStyle = null;
+
         public void Log(string key, object value, Component context = null)
         {
             if (LiveLogChannel == null)
@@ -52,6 +58,11 @@ namespace LogMonitor
                 return;
 
             LiveLogChannel.Log(key, value, lifeTime, context);
+        }
+
+        private void Start()
+        {
+            _currentStyle = null;
         }
 
         private void OnGUI()
@@ -74,8 +85,6 @@ namespace LogMonitor
             else if (!AlwaysShowInGame && !LiveLogChannel.AnyMessages)
                 return;
 
-            GUI.backgroundColor = ContainerColor;
-            GUI.contentColor = KeyColor;
             GUIStyle labelStyle = new()
             {
                 fontSize = FontSize,
@@ -113,7 +122,8 @@ namespace LogMonitor
             }
             boxRect.height += (Padding.y * 2);
 
-            GUI.Box(boxRect, string.Empty);
+            InitStyles(ContainerColor);
+            GUI.Box(boxRect, string.Empty, _currentStyle);
 
             if (!LiveLogChannel.AnyMessages)
                 return;
@@ -145,5 +155,31 @@ namespace LogMonitor
 
             LiveLogChannel.Tick();
         }
+
+        private void InitStyles(Color32 color)
+        {
+            if (_currentStyle != null && color == _oldContainerColor)
+            {
+                return;
+            }
+
+            _currentStyle = new GUIStyle(GUI.skin.box);
+            _currentStyle.normal.background = MakeTex(1, 1, color);
+            _oldContainerColor = color;
+        }
+
+        private Texture2D MakeTex(int width, int height, Color32 col)
+        {
+            var pix = new Color32[width * height];
+            for (int i = 0; i < pix.Length; ++i)
+            {
+                pix[i] = col;
+            }
+            Texture2D result = new Texture2D(width, height);
+            result.SetPixels32(pix);
+            result.Apply();
+            return result;
+        }
+
     }
 }
